@@ -17,7 +17,8 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  Future<String> login_res = Future<String>.value("initialData");
+  Future<String>? login_res = null; //초기값 null. 나중에 진짜 Future를 넣어주자.
+  bool initialized = false;
 
   void navigateToSignup() {
     //Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignupScreen()));
@@ -32,7 +33,8 @@ class _LoginScreenState extends State<LoginScreen> {
     });
     //future에 로직은 then으로 붙인다.
     //future builder는 오직 widget을 만드는데만 사용한다.
-    login_res.then((String result) {
+    //초기값이 null이지만 여기서는 절대 null일 수 없으므로 !를 붙여준다.
+    login_res!.then((String result) {
       showSnackBar("future is done - " + result, context);
     });
   }
@@ -88,12 +90,17 @@ class _LoginScreenState extends State<LoginScreen> {
                         // 사실상 done, waiting을 쓰면 됨.
                         // waiting -> progress bar 돌기
                         // done -> 이때는 값을 확인하자.
+                        // none -> future가 null일때. (아직 future를 넣어주지 않은 경우 쓰자.)
                         if (snapshot.connectionState ==
                             ConnectionState.active) {
                           print("connection state: active");
                         } else if (snapshot.connectionState ==
                             ConnectionState.none) {
-                          print("Connection statue: none");
+                          //future가 null인 상태
+                          //아직 future에 Future<> 를 넣어주지 않은 상태이므로 Text를 보여주자.
+                          //아직 로그인을 한번도 시도하지 않은 상태.
+                          print("Connection statue: none (future is null)");
+                          return Text("Login");
                         } else if (snapshot.connectionState ==
                             ConnectionState.done) {
                           //future가 완성되었음.
