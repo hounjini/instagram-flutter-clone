@@ -52,6 +52,7 @@ class MyApp extends StatelessWidget {
       //idTokenChanges: 토큰 변경, 다른곳에 로그인등..계속 변함
       //userChanges: update password 등 여러 이벤트 발생.
       //authStateChanges: login, logout
+      //home: LoginScreen(),
       home: StreamBuilder(
           stream: FirebaseAuth.instance.authStateChanges(),
           builder: (context, snapshot) {

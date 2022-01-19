@@ -17,7 +17,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  bool _isLoading = false;
+  Future<String> login_res = Future<String>.value("initialData");
 
   void navigateToSignup() {
     //Navigator.of(context).pushReplacement(MaterialPageRoute(builder: (context) => const SignupScreen()));
@@ -26,33 +26,15 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void loginUser() async {
-    if (_isLoading) {
-      return;
-    }
     setState(() {
-      _isLoading = true;
+      login_res = AuthMethods().loginUser(
+          email: _emailController.text, password: _passwordController.text);
     });
-
-    String res = await AuthMethods().loginUser(
-        email: _emailController.text, password: _passwordController.text);
-
-    setState(() {
-      _isLoading = false;
+    //future에 로직은 then으로 붙인다.
+    //future builder는 오직 widget을 만드는데만 사용한다.
+    login_res.then((String result) {
+      showSnackBar("future is done - " + result, context);
     });
-
-    if (res == "success") {
-      Navigator.of(context)
-          .pushReplacement(MaterialPageRoute(builder: (context) {
-        return const ResponsiveLayout(
-            webScreenLayout: WebScreenLayout(),
-            mobileScreenLayout: MobileScreenLayout());
-      }));
-      // Navigator.of(context).pushReplacement(
-      //     MaterialPageRoute(builder: (context) => HomeScreen()));
-    } else {
-      // show snackbar.
-      showSnackBar(res, context);
-    }
   }
 
   @override
@@ -99,9 +81,55 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 24),
               InkWell(
                 child: Container(
-                  child: _isLoading
-                      ? const CircularProgressIndicator(color: primaryColor)
-                      : const Text("Login"),
+                  //https://api.flutter.dev/flutter/widgets/FutureBuilder-class.html
+                  child: FutureBuilder<String>(
+                      future: login_res,
+                      builder: (context, snapshot) {
+                        // 사실상 done, waiting을 쓰면 됨.
+                        // waiting -> progress bar 돌기
+                        // done -> 이때는 값을 확인하자.
+                        if (snapshot.connectionState ==
+                            ConnectionState.active) {
+                          print("connection state: active");
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.none) {
+                          print("Connection statue: none");
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.done) {
+                          //future가 완성되었음.
+                          print("Connection statue: done");
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          //waiting: await에서 대기하고 있는 상태. 즉 future가 아직 완성되지 않은 상태.
+                          print(
+                              "Connection statue: waiting => show circular progress indicator");
+                          return const CircularProgressIndicator(
+                              color: primaryColor);
+                        }
+
+                        if (snapshot.hasData) {
+                          if (snapshot.data == "initialData") {
+                            print("Initial state: show login button");
+                            return Text("Login");
+                          } else if (snapshot.data == "success") {
+                            print("Login success. lets go home screen.");
+                            // snackbar같은건 logic이라서 쓰면 안됨 오직 widget생성에서만 쓸 수 있음.
+                            //showSnackBar("Login succesfully.", context);
+                            return Text("Login successfully");
+                          } else {
+                            print("Login error : " + snapshot.data!);
+                            return Text("Login");
+                          }
+                        } else if (snapshot.hasError) {
+                          print("snapshot has error!");
+                        } else {
+                          print(
+                              "future is not ready. show circular progress on snapshot else statement");
+                          return const CircularProgressIndicator(
+                              color: primaryColor);
+                        }
+                        return Text("Login: should not be here.");
+                      }),
                   width: double.infinity,
                   alignment: Alignment.center,
                   padding: const EdgeInsets.symmetric(vertical: 12),
