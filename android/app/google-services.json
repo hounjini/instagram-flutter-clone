@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "820177874143",
+    "project_id": "hounjini-instgram",
+    "storage_bucket": "hounjini-instgram.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:820177874143:android:bc84d927319fc5f4248d6a",
+        "android_client_info": {
+          "package_name": "com.example.instagram"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "820177874143-uca64emq8mjv4l8vlshecqv9q45gk048.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB4RmKF6D8inlwqTzpaBNV4aAmKdyxwzPA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "820177874143-uca64emq8mjv4l8vlshecqv9q45gk048.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
