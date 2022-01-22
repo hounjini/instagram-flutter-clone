@@ -17,7 +17,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  Future<String>? login_res = null; //초기값 null. 나중에 진짜 Future를 넣어주자.
+  Future<String>? login_res; //초기값 null. 나중에 진짜 Future를 넣어주자.
   bool initialized = false;
 
   void navigateToSignup() {

@@ -19,36 +19,33 @@ class AddPostScreen extends StatefulWidget {
 class _AddPostState extends State<AddPostScreen> {
   Uint8List? _file = null;
   final TextEditingController _descriptionController = TextEditingController();
-  bool _isLoading = false;
+  Future<String>? uploadRes;
 
   void postImage({
     required String uid,
     required String username,
     required String profileImage,
   }) async {
-    setState(() {
-      _isLoading = true;
-    });
     try {
-      String res = await FirestoreMethods().uploadPost(
+      Future<String> res = FirestoreMethods().uploadPost(
           description: _descriptionController.text,
           file: _file!,
           profImage: profileImage,
           uid: uid,
           username: username);
       setState(() {
-        _isLoading = false;
+        uploadRes = res;
       });
-      if (res == "success") {
-        clearImage();
-        showSnackBar("Uploading image success", context);
-      } else {
-        showSnackBar(res, context);
-      }
+      res.then((String res) {
+        if (res == "success") {
+          clearImage();
+          showSnackBar("Uploading image success", context);
+        } else {
+          showSnackBar(res, context);
+        }
+      });
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
+      //여기에서 snackbar의 에러가 잡힐 수도 있다.
       showSnackBar(e.toString(), context);
     }
   }
@@ -90,6 +87,7 @@ class _AddPostState extends State<AddPostScreen> {
                 onPressed: () {
                   //simple dialog box를 제거.
                   Navigator.of(context).pop();
+                  uploadRes = null;
                 },
               ),
             ],
@@ -101,6 +99,7 @@ class _AddPostState extends State<AddPostScreen> {
     setState(() {
       _file = null;
       _descriptionController.text = "";
+      uploadRes = null;
     });
   }
 
@@ -153,13 +152,20 @@ class _AddPostState extends State<AddPostScreen> {
       ),
       body: Column(
         children: [
-          _isLoading
-              ? Padding(
-                  padding: EdgeInsets.only(top: 10),
-                  child: LinearProgressIndicator())
-              : Padding(
-                  padding: EdgeInsets.only(top: 0),
-                ),
+          FutureBuilder<String>(
+              future: uploadRes,
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                if (snapshot.connectionState == ConnectionState.active ||
+                    snapshot.connectionState == ConnectionState.waiting) {
+                  return const Padding(
+                      padding: EdgeInsets.only(top: 10),
+                      child: LinearProgressIndicator());
+                } else {
+                  return const Padding(
+                    padding: EdgeInsets.only(top: 0),
+                  );
+                }
+              }),
           const Divider(),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceAround,
