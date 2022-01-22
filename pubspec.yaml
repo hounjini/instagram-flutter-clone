@@ -36,6 +36,8 @@ dependencies:
     sdk: flutter
   flutter_svg: ^1.0.1
   image_picker: ^0.8.4+4
+  provider: ^6.0.2
+  uuid: ^3.0.5
 
 dev_dependencies:
   flutter_lints: ^1.0.0
@@ -55,6 +57,7 @@ flutter:
   assets:
     - assets/ic_instagram.svg
     - assets/default_profile_image.png
+    - assets/upload_photo_default.jpg
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
   # For details regarding adding assets from package dependencies, see
