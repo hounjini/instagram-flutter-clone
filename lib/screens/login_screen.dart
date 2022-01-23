@@ -120,6 +120,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             return Text("Login");
                           } else if (snapshot.data == "success") {
                             print("Login success. lets go home screen.");
+
                             // snackbar같은건 logic이라서 쓰면 안됨 오직 widget생성에서만 쓸 수 있음.
                             //showSnackBar("Login succesfully.", context);
                             return Text("Login successfully");

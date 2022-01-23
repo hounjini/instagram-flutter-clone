@@ -22,7 +22,7 @@ class StorageMethods {
 
     if (isPost) {
       String id = const Uuid().v1();
-      ref.child(id);
+      ref = ref.child(id);
       // => {root}/childName(=post)/userId/postId (sub collection is availabile);
     }
 
