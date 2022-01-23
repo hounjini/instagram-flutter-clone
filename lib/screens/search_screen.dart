@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:instagram/screens/profile_screen.dart';
 import 'package:instagram/utils/colors.dart';
+import 'package:instagram/utils/global_variables.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -90,8 +91,15 @@ class _SearchScreenState extends State<SearchScreen> {
                         (snapshot.data! as dynamic).docs[index]['postUrl']);
                   },
                   staggeredTileBuilder: (index) {
-                    int crossAxisCellCount = index % 7 == 0 ? 2 : 1;
-                    double mainAxisCellCount = index % 7 == 0 ? 2 : 1;
+                    late int crossAxisCellCount;
+                    late double mainAxisCellCount;
+                    if (MediaQuery.of(context).size.width > webScreenSize) {
+                      crossAxisCellCount = 1;
+                      mainAxisCellCount = 1;
+                    } else {
+                      crossAxisCellCount = index % 7 == 0 ? 2 : 1;
+                      mainAxisCellCount = index % 7 == 0 ? 2 : 1;
+                    }
                     return StaggeredTile.count(
                         crossAxisCellCount, mainAxisCellCount);
                   },
