@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:instagram/main.dart';
 import 'package:instagram/resources/auth_method.dart';
 import 'package:instagram/resources/firestore_methods.dart';
 import 'package:instagram/screens/follow_button.dart';
@@ -67,7 +68,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
             await AuthMethods().signOut();
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (context) => LoginScreen(),
+                builder: (context) => const MyApp(),
+                //여기서 LoginScreen으로 가면 Login 이후에 MyAPP의 StreamBuilder에서 처리해주는 부분이 불리지 않는다.
+                //따라서 MyApp()으로 가야한다.
               ),
             );
           },
